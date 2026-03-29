@@ -1,0 +1,61 @@
+class Solution:
+    def maxSubArray(self, nums: List[int]) -> int:
+        if len(nums) == 0:
+            return 0
+        if len(nums) == 1:
+            return nums[0]
+        '''
+        Solution 1: Using PrefixSum
+        '''
+        '''
+        # Let's create a prefix sums array (in O(n))
+        sums = [nums[0]]
+        for i in range(1, len(nums)):
+            sums.append(sums[-1] + nums[i])
+
+        '''
+        '''
+        Solutions 1.1: Looping over all possibilities
+        '''
+        '''
+        # Now we can easily calculate the sums between two points (in O(1)), looping in O(n^2) we can check all sums
+        maxSum = max(max(nums), max(sums))
+        for i in range(1, len(nums)):
+            for j in range(i, len(nums)):
+                maxSum = max(maxSum, sums[j] - sums[i-1])
+        return maxSum
+        
+        '''
+        '''
+        Done in 6min
+        '''
+
+        '''
+        Solution 1.2:
+        '''
+        '''
+        maxSums = max(sums)
+        index = sums.index(maxSums)
+        if index > 0:
+            return max(max(nums), maxSums, maxSums - min(sums[:index]))
+        else:
+            return max(max(nums), maxSums)
+        '''
+
+        '''
+        Solution 2: Getting the data needed for 1.2 during the prefix sum loop
+        '''
+        maxSum = nums[0]
+        minSum = 0
+        curSum = nums[0]
+        maxSumIndex0 = True
+        minSumPrev = 0
+        for i in range(1, len(nums)):
+            curSum = curSum + nums[i]
+            if curSum >= maxSum:
+                maxSum = curSum
+                minSumPrev = minSum
+                maxSumIndex0 = False
+            if curSum < minSum:
+                minSum = curSum
+        return max(max(nums), maxSum - minSumPrev)
